@@ -31,8 +31,8 @@ ENV MDB_MCP_TRANSPORT="http" \
     MDB_MCP_HTTP_HOST="0.0.0.0" \
     MDB_MCP_HTTP_PORT="3000"
 
-# Expose Nginx port
-EXPOSE 80
+# Expose Nginx port (non-privileged)
+EXPOSE 8080
 
 # Ensure /tmp is writable for non-root user
 RUN chmod 1777 /tmp

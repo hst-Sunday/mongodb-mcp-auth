@@ -34,7 +34,7 @@ docker pull ghcr.io/hst-Sunday/mongodb-mcp-auth:latest
 ```bash
 docker run -d \
   --name mongodb-mcp-auth \
-  -p 80:80 \
+  -p 80:8080 \
   -e MDB_MCP_CONNECTION_STRING="<your_mongodb_connection_string>" \
   -e MDB_MCP_READ_ONLY="true" \
   -e BEARER_TOKEN="<your_bearer_token>" \
@@ -84,7 +84,7 @@ docker run -d \
 通过 `BEARER_TOKEN` 环境变量动态配置 Bearer Token：
 
 ```bash
-docker run -d -p 80:80 \
+docker run -d -p 80:8080 \
   -e MDB_MCP_CONNECTION_STRING="..." \
   -e BEARER_TOKEN="your_secret_token_here" \
   ghcr.io/hst-Sunday/mongodb-mcp-auth:latest
@@ -93,7 +93,7 @@ docker run -d -p 80:80 \
 ### 方式 B：挂载自定义配置
 
 ```bash
-docker run -d -p 80:80 \
+docker run -d -p 80:8080 \
   -v $(pwd)/nginx/nginx.conf:/etc/nginx/nginx.conf.template:ro \
   -e MDB_MCP_CONNECTION_STRING="..." \
   -e BEARER_TOKEN="your_secret_token_here" \
@@ -117,7 +117,7 @@ docker build -t ghcr.io/hst-Sunday/mongodb-mcp-auth:latest .
 # 运行（示例）
 docker run -d \
   --name mongodb-mcp-auth \
-  -p 8080:80 \
+  -p 8080:8080 \
   -e MDB_MCP_CONNECTION_STRING="<your_mongodb_connection_string>" \
   -e BEARER_TOKEN="<your_bearer_token>" \
   ghcr.io/hst-Sunday/mongodb-mcp-auth:latest
@@ -127,8 +127,9 @@ docker run -d \
 
 ## 端口与网络
 
-- 镜像对外暴露：`80/tcp`
+- 镜像对外暴露：`8080/tcp`（非特权端口，适合非root用户）
 - 容器内 MCP Server 监听：`127.0.0.1:3000`（由 Nginx 反代）
+- 容器内 Nginx 监听：`0.0.0.0:8080`
 
 ## 故障排查
 

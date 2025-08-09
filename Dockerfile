@@ -34,6 +34,7 @@ ENV MDB_MCP_TRANSPORT="http" \
 # Expose Nginx port
 EXPOSE 80
 
+USER 10014
 # Use dumb-init for proper signal handling, then run supervisord in foreground
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

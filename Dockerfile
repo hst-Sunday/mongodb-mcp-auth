@@ -37,6 +37,8 @@ EXPOSE 8080
 # Ensure /tmp is writable for non-root user
 RUN chmod 1777 /tmp
 
+# Set HOME directory for user 10014
+ENV HOME=/tmp
 USER 10014
 # Use dumb-init for proper signal handling, then run supervisord in foreground
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

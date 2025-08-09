@@ -1,0 +1,51 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# GitHub
+.github/
+
+# Development files
+*.log
+*.tmp
+*.temp
+.env
+.env.*
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+*.md
+docs/
+
+# Docker files (except Dockerfile itself)
+docker-compose*.yml
+.dockerignore
+
+# Temporary build files
+*.tar
+*.gz
+*.zip
+
+# Cache directories
+.cache/
+.npm/
+.yarn/
+.claude

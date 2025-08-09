@@ -34,10 +34,8 @@ ENV MDB_MCP_TRANSPORT="http" \
 # Expose Nginx port
 EXPOSE 80
 
-# Ensure necessary directories for non-root user
-RUN chmod 1777 /tmp && \
-    mkdir -p /var/cache/nginx /var/log/nginx /var/run && \
-    chown -R 10014:10014 /var/cache/nginx /var/log/nginx /var/run
+# Ensure /tmp is writable for non-root user
+RUN chmod 1777 /tmp
 
 USER 10014
 # Use dumb-init for proper signal handling, then run supervisord in foreground

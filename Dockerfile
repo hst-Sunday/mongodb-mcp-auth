@@ -34,6 +34,9 @@ ENV MDB_MCP_TRANSPORT="http" \
 # Expose Nginx port
 EXPOSE 80
 
+# Ensure /tmp is writable for non-root user
+RUN chmod 1777 /tmp
+
 USER 10014
 # Use dumb-init for proper signal handling, then run supervisord in foreground
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

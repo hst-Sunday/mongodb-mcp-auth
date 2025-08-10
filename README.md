@@ -38,6 +38,7 @@ docker run -d \
   -e MDB_MCP_CONNECTION_STRING="<your_mongodb_connection_string>" \
   -e MDB_MCP_READ_ONLY="true" \
   -e BEARER_TOKEN="<your_bearer_token>" \
+  -e ALLOWED_HOSTS="api.example2.com,api.example.com" \
   ghcr.io/hst-Sunday/mongodb-mcp-auth:latest
 ```
 
@@ -65,6 +66,11 @@ docker run -d \
   - 设置 Nginx Bearer Token 鉴权的密钥，例如：`"your_secret_token"`
   - 如不设置，将使用默认值：`"sunday20250809."`
   
+ - **ALLOWED_HOSTS**（新增）
+   - 通过逗号分隔的域名白名单，仅允许这些 Host 访问反向代理。
+   - 例如：`ALLOWED_HOSTS="api.example2.com,api.example.com"`
+   - 未设置时为兼容性考虑将放行所有 Host（生产环境建议务必设置）。
+  
 - 其他常用参数：
   - `MDB_MCP_READ_ONLY`：设为 `"true"` 启用只读。
   - `MDB_MCP_TRANSPORT`：统一镜像默认 `http`（容器内 3000，被 Nginx 反代）。
@@ -87,6 +93,7 @@ docker run -d \
 docker run -d -p 80:8080 \
   -e MDB_MCP_CONNECTION_STRING="..." \
   -e BEARER_TOKEN="your_secret_token_here" \
+  -e ALLOWED_HOSTS="api.example2.com" \
   ghcr.io/hst-Sunday/mongodb-mcp-auth:latest
 ```
 

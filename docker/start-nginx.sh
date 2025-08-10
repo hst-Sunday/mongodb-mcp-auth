@@ -19,7 +19,8 @@ if [ -n "$ALLOWED_HOSTS_INPUT" ]; then
     [ -z "$h_trim" ] && continue
     # 仅允许字母/数字/点/短横线
     if printf '%s' "$h_trim" | grep -Eq '^[A-Za-z0-9.-]+$'; then
-      ALLOWED_HOSTS_MAP="$ALLOWED_HOSTS_MAP\n    $h_trim 1;"
+      ALLOWED_HOSTS_MAP="${ALLOWED_HOSTS_MAP}
+    ${h_trim} 1;"
     fi
   done
   # 若最终为空，则降级为允许所有
@@ -31,10 +32,30 @@ else
   ALLOWED_HOSTS_MAP="~^.*$ 1;"
 fi
 
+# 构建安全的正则：^(host1|host2)$，各 host 内的点需转义
+ALLOWED_HOSTS_REGEX=".*"
+if [ -n "$ALLOWED_HOSTS_INPUT" ]; then
+  list=$(printf '%s' "$ALLOWED_HOSTS_INPUT" | tr ',' ' ')
+  hosts_regex=""
+  for h in $list; do
+    h_trim=$(printf '%s' "$h" | sed 's/^ *//; s/ *$//' | tr 'A-Z' 'a-z')
+    [ -z "$h_trim" ] && continue
+    if printf '%s' "$h_trim" | grep -Eq '^[A-Za-z0-9.-]+$'; then
+      escaped=$(printf '%s' "$h_trim" | sed 's/\./\\\./g')
+      if [ -z "$hosts_regex" ]; then
+        hosts_regex="$escaped"
+      else
+        hosts_regex="$hosts_regex|$escaped"
+      fi
+    fi
+  done
+  [ -n "$hosts_regex" ] && ALLOWED_HOSTS_REGEX="$hosts_regex"
+fi
+
 # 使用 envsubst 替换 nginx 配置文件中的环境变量，输出到临时目录
 export BEARER_TOKEN
-export ALLOWED_HOSTS_MAP
-envsubst '${BEARER_TOKEN} ${ALLOWED_HOSTS_MAP}' < /etc/nginx/nginx.conf.template > /tmp/nginx/nginx.conf
+export ALLOWED_HOSTS_REGEX
+envsubst '${BEARER_TOKEN} ${ALLOWED_HOSTS_REGEX}' < /etc/nginx/nginx.conf.template > /tmp/nginx/nginx.conf
 
 # 启动 nginx，使用临时配置文件
 exec /usr/sbin/nginx -c /tmp/nginx/nginx.conf -g 'daemon off;'
